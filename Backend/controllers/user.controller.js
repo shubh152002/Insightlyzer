@@ -24,7 +24,7 @@ export const register = async (req, res) => {
 
     res.status(201).json({ message: 'User registered successfully',success: true });
   } catch (err) {
-    res.status(500).json({ error: err.message }); // ✅ fixed typo here
+    res.status(500).json({ error: err.message || 'Internal Server Error',success: false}); // ✅ fixed typo here
   }
 };
 
@@ -75,7 +75,7 @@ export const login = async (req, res) => {
         });
     
     }  catch (err) {
-        console.log(err);
+         res.status(500).json({ error: err.message || 'Internal Server Error',success: false});
         // ✅ fixed typo here
         
     };

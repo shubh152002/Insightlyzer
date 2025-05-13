@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
-import loginImg from "../assets/Login.svg";
+import loginImg from "../assets/login.svg";
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '', role: 'user' });
@@ -10,16 +10,16 @@ const Login = () => {
 
   useEffect(() => {
     gsap.from(formRef.current, {
-      x: 100,
-      opacity: 0,
-      duration: 1,
-      ease: 'power3.out',
-    });
-    gsap.from(imageRef.current, {
       x: -100,
       opacity: 0,
-      duration: 1,
-      ease: 'power3.out',
+      duration: 1.2,
+      ease: 'power4.inOut',
+    });
+    gsap.from(imageRef.current, {
+      x: 100,
+      opacity: 0,
+      duration: 1.2,
+      ease:'power4.inOut'
     });
   }, []);
 
@@ -33,19 +33,11 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-gray-500">
-      {/* Image Section */}
-      <div
-        ref={imageRef}
-        className="w-full md:w-52 h-64 md:h-80  bg-cover object-fit bg-center"
-        style={{
-          backgroundImage:
-            `url(${loginImg})`
-        }}
-      ></div>
+    <div className="min-h-screen flex flex-col md:flex-row gap-3 items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600">
+    
 
       {/* Login Form */}
-      <div ref={formRef} className="w-full md:w-1/2 p-10 bg-white shadow-lg">
+      <div ref={formRef} className="w-full md:w-99 p-10 bg-white shadow-lg rounded">
         <h2 className="text-3xl font-bold text-indigo-600 text-center mb-8">Welcome Back</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
@@ -89,6 +81,15 @@ const Login = () => {
           </Link>
         </p>
       </div>
+        {/* Image Section */}
+      <div
+        ref={imageRef}
+        className="w-full md:w-99 h-64 md:h-99  bg-cover object-fit bg-center  md:rounded md:shadow-lg"
+        style={{
+          backgroundImage:
+            `url(${loginImg})`
+        }}
+      ></div>
     </div>
   );
 };

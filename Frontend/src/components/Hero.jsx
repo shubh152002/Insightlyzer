@@ -1,5 +1,5 @@
 import React from 'react'
-import heroImg from '../assets/home.png'; // You can replace with your own image
+import heroImg from '../assets/home.svg'; // You can replace with your own image
 import { Link } from 'react-router-dom';
 
 const Hero = () => {

@@ -17,6 +17,8 @@ const corsOptions = {
   origin: "http://localhost:5173",
   credentials: true,
 };
+app.use(cors(corsOptions));
+
 //apis
 app.use('/api/auth', userRoute);
 
