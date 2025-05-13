@@ -1,73 +1,69 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import React, { useState } from 'react';
-// import { useDispatch } from 'react-redux';
-// import { registerUser } from './authSlice';
-import { useNavigate, Link } from 'react-router-dom';
 const Register = () => {
-    const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    password: '',
-    role: 'user'
-  });
+  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'user' });
 
-  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
-
-  const handleSubmit = async e => {
-    e.preventDefault();
-    await dispatch(registerUser(form));
-    navigate('/login');
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // handle register logic here
+  };
+
   return (
-   <>
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-indigo-600 mb-6">Create an Insightlyzer Account</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="max-w-md w-full bg-white p-8 rounded shadow">
+        <h2 className="text-2xl font-bold mb-6 text-center text-indigo-600">Register on Insightlyzer</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
             type="text"
             name="name"
             placeholder="Full Name"
+            className="w-full border border-gray-300 p-2 rounded"
             value={form.name}
             onChange={handleChange}
             required
           />
           <input
-            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
             type="email"
             name="email"
             placeholder="Email"
+            className="w-full border border-gray-300 p-2 rounded"
             value={form.email}
             onChange={handleChange}
             required
           />
           <input
-            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
             type="password"
             name="password"
             placeholder="Password"
+            className="w-full border border-gray-300 p-2 rounded"
             value={form.password}
             onChange={handleChange}
             required
           />
-          <button
-            type="submit"
-            className="w-full bg-indigo-600 text-white py-3 rounded hover:bg-indigo-700 transition"
+          <select
+            name="role"
+            className="w-full border border-gray-300 p-2 rounded"
+            value={form.role}
+            onChange={handleChange}
           >
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+          <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">
             Register
           </button>
         </form>
-        <p className="text-center text-sm text-gray-600 mt-4">
-          Already have an account?{' '}
-          <Link to="/login" className="text-indigo-600 hover:underline">Login</Link>
+        <p className="text-center mt-4 text-sm">
+          Already have an account? <Link to="/login" className="text-indigo-600">Login</Link>
         </p>
       </div>
     </div>
-   </>
   );
 };
 
-export default Register
+export default Register;
