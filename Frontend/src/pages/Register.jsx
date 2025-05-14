@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import registerImg from '../assets/Register.svg'; // 🖼️ your image
 import axios from 'axios';
 import API from '../services/API';
 import Nav from '../components/Nav';
-// import { useNavigate } from 'react-router-dom';
+
 
 
 const Register = () => {
@@ -18,6 +18,7 @@ const Register = () => {
 
   const formRef = useRef();
   const imageRef = useRef();
+  const navigate = useNavigate();
 
   useEffect(() => {
     gsap.from(formRef.current, {
@@ -56,7 +57,7 @@ const Register = () => {
       if((response?.data?.success)){
         alert("Registration successful");
         // Redirect to login page
-        
+        navigate('/login');
         
       } else{
         alert(response?.data?.message || "Registration failed");

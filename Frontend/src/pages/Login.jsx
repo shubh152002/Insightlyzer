@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import loginImg from "../assets/login.svg";
 import Nav from '../components/Nav';
@@ -9,7 +9,7 @@ const Login = () => {
   const [form, setForm] = useState({ email: '', password: '', role: 'user' });
   const formRef = useRef();
   const imageRef = useRef();
-
+  const navigate = useNavigate();
   useEffect(() => {
     gsap.from(formRef.current, {
       x: -100,
@@ -44,7 +44,7 @@ const Login = () => {
       if((response?.data?.success)){
         alert("Loging scuccessful");
         // Redirect to dashboard or home page
-
+        navigate('/dashboard');
       }
       else{
         alert(response?.data?.message || "Login failed");
