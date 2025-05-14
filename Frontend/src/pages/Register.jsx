@@ -4,6 +4,9 @@ import gsap from 'gsap';
 import registerImg from '../assets/Register.svg'; // 🖼️ your image
 import axios from 'axios';
 import API from '../services/API';
+import Nav from '../components/Nav';
+// import { useNavigate } from 'react-router-dom';
+
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -37,7 +40,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+   
      
 
     try {
@@ -52,6 +55,8 @@ const Register = () => {
 
       if((response?.data?.success)){
         alert("Registration successful");
+        // Redirect to login page
+        
         
       } else{
         alert(response?.data?.message || "Registration failed");
@@ -62,9 +67,12 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row gap-3 items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600">
+    <>
+    <Nav />
+
+    <div className="min-h-screen flex flex-col md:flex-row gap-3 items-center justify-center  bg-gradient-to-br from-indigo-500 to-purple-600">
       {/* Form Section */}
-      <div ref={formRef} className="w-full md:w-99 p-10 bg-white shadow-lg rounded">
+      <div ref={formRef} className="w-full md:p-3 md:w-99 p-10 bg-white shadow-lg rounded">
         <h2 className="text-3xl font-bold text-indigo-600 text-center mb-8">Create an Account</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
@@ -127,6 +135,8 @@ const Register = () => {
         }}
       ></div>
     </div>
+    </>
+    
   );
 };
 

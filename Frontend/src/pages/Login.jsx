@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import loginImg from "../assets/login.svg";
+import Nav from '../components/Nav';
+import API from '../services/API';
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '', role: 'user' });
@@ -27,15 +29,35 @@ const Login = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(form); // Handle login logic
+    
+    try {
+      const { email, password, role} = form;
+      const response = await API.post('/auth/login',{
+        email,
+        password,
+        role
+      })
+         console.log('✅ Response:', response); 
+
+      if((response?.data?.success)){
+        alert("Loging scuccessful");
+        // Redirect to dashboard or home page
+
+      }
+      else{
+        alert(response?.data?.message || "Login failed");
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "Login error");
+    }
   };
 
   return (
+    <>
+    <Nav/>
     <div className="min-h-screen flex flex-col md:flex-row gap-3 items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600">
-    
-
       {/* Login Form */}
       <div ref={formRef} className="w-full md:w-99 p-10 bg-white shadow-lg rounded">
         <h2 className="text-3xl font-bold text-indigo-600 text-center mb-8">Welcome Back</h2>
@@ -91,6 +113,8 @@ const Login = () => {
         }}
       ></div>
     </div>
+    </>
+    
   );
 };
 
