@@ -12,7 +12,7 @@ import { useNavigate  } from "react-router-dom";
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
   const navigate = useNavigate();
-
+  
   return (
     <div className="flex min-h-screen bg-gray-100 ">
       {/* Sidebar */}
@@ -39,7 +39,7 @@ const Dashboard = () => {
         <div className="flex justify-between">
           <h2 className="text-2xl font-semibold mb-6">{activeTab}</h2>
           <div className="flex items-center gap-3">
-            <img src="" alt="userlogo" className="w-8 h-8 rounded-full bg-gray-300" />
+            <img src= "null" alt="userlogo" className="w-8 h-8 rounded-full bg-gray-300" />
             <p>username</p>
             <span>...</span>
           </div>
@@ -70,11 +70,32 @@ const Dashboard = () => {
         )}
 
         {activeTab === "Upload" && (
-          <div className="text-gray-700 p-4 bg-white shadow rounded">
-            <h3 className="text-xl font-bold mb-4">Upload Section</h3>
-            <p>File upload form or history here...</p>
-          </div>
-        )}
+  <div className="text-gray-700 p-4 bg-white shadow rounded">
+    <h3 className="text-xl font-bold mb-4">Upload Section</h3>
+
+    <form
+      className="space-y-4"
+      onSubmit={(e) => {
+        e.preventDefault();
+        // handleSubmitUpload(); (abhi backend se nahi jod rahe)
+      }}
+    >
+      <input
+        type="file"
+        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+        onChange={(e) => console.log(e.target.files[0])}
+        required
+      />
+
+      <button
+        type="submit"
+        className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+      >
+        Upload
+      </button>
+    </form>
+  </div>
+)}
 
         {activeTab === "Analyses" && (
           <div className="text-gray-700 p-4 bg-white shadow rounded">

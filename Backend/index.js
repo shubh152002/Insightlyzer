@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
 import dotenv from "dotenv";
 import userRoute from "./routes/user.route.js";
+import uploadRouters from "./routes/upload.route.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 5000;
@@ -21,6 +22,8 @@ app.use(cors(corsOptions));
 
 //apis
 app.use('/api/auth', userRoute);
+app.use('/api/upload',uploadRouters)
+
 
 app.listen(PORT, () => {
   connectDB();
