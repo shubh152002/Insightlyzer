@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import xlsx from 'xlsx';
+import UploadData from "../models/UploadData.model.js";
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ const upload = multer({
 });
 
 // 3. Route to handle upload
-router.post('/', upload.single('file'), (req, res) => {
+router.post('/', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded' });
 
@@ -31,7 +32,12 @@ router.post('/', upload.single('file'), (req, res) => {
     const sheetName = workbook.SheetNames[0]; // First sheet
     const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]); // Convert to JSON
 
-    console.log('📄 Sheet Data:', sheetData);
+    await UploadData.create({ data: sheetData });
+
+    // res.status(200).json({
+    //   success: true,
+    //   message: 'File uploaded and data saved to database',
+    // });
 
     // 5. Return data to frontend
     res.status(200).json({

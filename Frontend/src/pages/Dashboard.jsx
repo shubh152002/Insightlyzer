@@ -8,10 +8,43 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 import { useNavigate  } from "react-router-dom";
+import axios from "axios";
 
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState("Dashboard");
+  const [activeTab, setActiveTab] = useState("Upload");
   const navigate = useNavigate();
+
+  // state inside Dashboard component
+const [uploadFile, setUploadFile] = useState(null);
+
+// upload handler
+const handleSubmitUpload = async (e) => {
+  e.preventDefault();
+
+  if (!uploadFile) {
+    alert("Please select a file first");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("file", uploadFile);
+
+  try {
+    const res = await axios.post("http://localhost:5000/api/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+    });
+
+   
+    alert(res.data.message || "File uploaded successfully");
+
+  } catch (err) {
+    
+    alert(err.response?.data?.message || "Upload failed");
+  }
+};
   
   return (
     <div className="flex min-h-screen bg-gray-100 ">
@@ -47,20 +80,7 @@ const Dashboard = () => {
         <hr />
 
         {/* Conditional Rendering Based on Active Tab */}
-        {activeTab === "Dashboard" && (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-3">
-              <DashboardCard title="Sales" value="67,343" change="+5.67%" />
-              <DashboardCard title="Uploads" value="2,343" change="-5.64%" red />
-              <DashboardCard title="Users" value="35,343" change="+1.67%" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-              <OverviewCard />
-              <ProgressCard percent={70} />
-              <ActivityCard />
-            </div>
-          </>
-        )}
+      
 
         {activeTab === "User History" && (
           <div className="text-gray-700 p-4 bg-white shadow rounded">
@@ -69,24 +89,22 @@ const Dashboard = () => {
           </div>
         )}
 
-        {activeTab === "Upload" && (
+     {activeTab === "Upload" && (
   <div className="text-gray-700 p-4 bg-white shadow rounded">
     <h3 className="text-xl font-bold mb-4">Upload Section</h3>
-
-    <form
-      className="space-y-4"
-      onSubmit={(e) => {
-        e.preventDefault();
-        // handleSubmitUpload(); (abhi backend se nahi jod rahe)
-      }}
-    >
+    <form className="space-y-4" onSubmit={handleSubmitUpload}>
       <input
         type="file"
-        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-        onChange={(e) => console.log(e.target.files[0])}
+        accept=".csv, .xls, .xlsx"
+        onChange={(e) => setUploadFile(e.target.files[0])}
         required
+        className="block w-full text-sm text-gray-600
+          file:mr-4 file:py-2 file:px-4
+          file:rounded-full file:border-0
+          file:text-sm file:font-semibold
+          file:bg-[#dc3545] file:text-white
+          hover:file:bg-red-600"
       />
-
       <button
         type="submit"
         className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
