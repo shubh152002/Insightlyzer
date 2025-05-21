@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
 
 const uploadDataSchema = new mongoose.Schema({
+    fileName: {
+    type: String,
+    required: true,
+    unique: true, // 👈 ye important hai
+  },
+  
   data: {
     type: [mongoose.Schema.Types.Mixed], // Flexible structure
     required: true,

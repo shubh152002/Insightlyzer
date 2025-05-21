@@ -14,7 +14,7 @@ const Hero = () => {
           <p className="text-gray-600 mb-6">
             Upload spreadsheets, explore dynamic charts, and extract smart insights in just a few clicks.
           </p>
-          <Link to="/register" className="inline-block bg-indigo-600 text-white px-6 py-3 rounded hover:bg-indigo-700 transition">
+          <Link to="/login" className="inline-block bg-indigo-600 text-white px-6 py-3 rounded hover:bg-indigo-700 transition">
             Get Started
           </Link>
         </div>
