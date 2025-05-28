@@ -11,6 +11,11 @@ const uploadDataSchema = new mongoose.Schema({
     type: [mongoose.Schema.Types.Mixed], // Flexible structure
     required: true,
   },
+   user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User", // ✅ your user model name
+    required: true,
+  },
   uploadedAt: {
     type: Date,
     default: Date.now,

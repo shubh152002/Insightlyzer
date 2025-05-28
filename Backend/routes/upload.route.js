@@ -3,6 +3,7 @@ import multer from "multer";
 import path from "path";
 import xlsx from "xlsx";
 import UploadData from "../models/UploadData.model.js";
+import isAuthenticated from "../middleware/isAunthenticated.js";
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ const upload = multer({
 });
 
 // 3. Route to handle upload
-router.post("/", upload.single("file"), async (req, res) => {
+router.post("/",isAuthenticated, upload.single("file"), async (req, res) => {
   try {
     if (!req.file)
       return res
@@ -32,7 +33,7 @@ router.post("/", upload.single("file"), async (req, res) => {
     // 👇 Duplicate file check
     const fileName = req.file.originalname;
 
-    const already = await UploadData.findOne({ fileName });
+    const already = await UploadData.findOne({ fileName,user:req.user.id });
     if (already) {
       return res.status(409).json({
         success: false,
@@ -46,7 +47,7 @@ router.post("/", upload.single("file"), async (req, res) => {
     const sheetName = workbook.SheetNames[0]; // First sheet
     const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]); // Convert to JSON
 
-    await UploadData.create({ fileName, data: sheetData });
+    await UploadData.create({ fileName, data: sheetData, user: req.user.id });
 
     // res.status(200).json({
     //   success: true,
@@ -63,5 +64,19 @@ router.post("/", upload.single("file"), async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 });
+
+// ✅ Get all uploaded data (for user history)
+router.get("/all",isAuthenticated, async (req, res) => {
+  try {
+    const uploads = await UploadData.find({user: req.user.id}).sort({ uploadedAt: -1 }); // latest first
+    res.status(200).json({
+      success: true,
+      data: uploads,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 
 export default router;

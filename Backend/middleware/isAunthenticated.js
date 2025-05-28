@@ -11,6 +11,8 @@ const isAuthenticated = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded; // Attach user data to the request
+    console.log(decoded);
+    
     next(); // Proceed to the protected route
   } catch (err) {
     return res.status(403).json({ message: 'Forbidden: Invalid or expired token' });
