@@ -78,5 +78,23 @@ router.get("/all",isAuthenticated, async (req, res) => {
   }
 });
 
+// ✅ GET file by ID for analysis
+router.get("/:id", isAuthenticated, async (req, res) => {
+  try {
+    const file = await UploadData.findOne({
+      _id: req.params.id,
+      user: req.user.id, // ✅ ensures user can only fetch their file
+    });
+
+    if (!file) {
+      return res.status(404).json({ success: false, message: "File not found" });
+    }
+
+    res.status(200).json({ success: true, data: file.data });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 
 export default router;

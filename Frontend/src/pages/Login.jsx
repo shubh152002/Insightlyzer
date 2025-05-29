@@ -39,7 +39,7 @@ const Login = () => {
         password,
         role
       })
-         console.log('✅ Response:', response); 
+        
 
       if((response?.data?.success)){
         alert("Loging scuccessful");
