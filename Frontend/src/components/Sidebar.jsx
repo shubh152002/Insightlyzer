@@ -7,7 +7,10 @@ import {
   FiSettings,
   FiLogOut,
 } from "react-icons/fi";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
+import { logout } from "../redux/authSlice";
 
 
 
@@ -28,6 +31,13 @@ const Sidebar = ({closeSidebar}) => {
     navigate(path);
     closeSidebar();
   }
+  const dispatch = useDispatch();
+
+  const logoutHandler = ()=>{
+    dispatch(logout());
+    navigate('/login');
+    closeSidebar();
+  }
 
   return (
     <div className="w-64 bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex flex-col justify-between py-6 px-4 gap-y-5">
@@ -46,7 +56,7 @@ const Sidebar = ({closeSidebar}) => {
           ))}
         </nav>
       </div>
-      <button className="flex items-center gap-2 text-sm hover:text-gray-300">
+      <button  className="flex items-center gap-2 text-sm hover:text-gray-300" onClick={logoutHandler}>
         <FiLogOut className="text-lg" /> Logout
       </button>
     </div>

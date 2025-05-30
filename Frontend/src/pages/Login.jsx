@@ -4,6 +4,9 @@ import gsap from 'gsap';
 import loginImg from "../assets/login.svg";
 import Nav from '../components/Nav';
 import API from '../services/API';
+import { useDispatch}from 'react-redux'
+import { login  } from '../redux/authSlice';
+
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '', role: 'user' });
@@ -29,6 +32,8 @@ const Login = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+    const dispatch = useDispatch();
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -40,9 +45,11 @@ const Login = () => {
         role
       })
         
-
+      
       if((response?.data?.success)){
+        
         alert("Loging scuccessful");
+        dispatch(login(response.data.user))
         // Redirect to dashboard or home page
         navigate('/dashboard');
       }
@@ -106,7 +113,7 @@ const Login = () => {
         {/* Image Section */}
       <div
         ref={imageRef}
-        className="w-full md:w-99 h-64 md:h-99  bg-cover object-fit bg-center  md:rounded md:shadow-lg"
+        className="hidden md:block w-full md:w-99 h-64 md:h-99  bg-cover object-fit bg-center  md:rounded md:shadow-lg "
         style={{
           backgroundImage:
             `url(${loginImg})`

@@ -1,7 +1,10 @@
-import React from 'react'
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 const Dashboardcard = () => {
  
+  const { user } =useSelector((state)=> state.auth);
+
   return (
     <div className="flex-1 p-6">
         <div className="flex justify-between">
@@ -12,7 +15,7 @@ const Dashboardcard = () => {
               alt="userlogo"
               className="w-8 h-8 rounded-full bg-gray-300"
             />
-            <p>username</p>
+            <p>{user?.fullname}</p>
             <span>...</span>
           </div>
         </div>
