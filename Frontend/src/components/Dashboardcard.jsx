@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
-
+import { FiUser } from "react-icons/fi";
 const Dashboardcard = () => {
  
   const { user } =useSelector((state)=> state.auth);
@@ -10,12 +10,9 @@ const Dashboardcard = () => {
         <div className="flex justify-between">
           <h2 className="text-2xl font-semibold mb-6">Dashboard</h2>
           <div className="flex items-center gap-3">
-            <img
-              src="null"
-              alt="userlogo"
-              className="w-8 h-8 rounded-full bg-gray-300"
-            />
-            <p>{user?.fullname}</p>
+           <FiUser />
+
+           <p>{user?.fullname}</p>
             <span>...</span>
           </div>
         </div>
