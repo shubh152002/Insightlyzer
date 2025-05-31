@@ -9,10 +9,12 @@ import UserHistory from "./pages/UserHistory";
 import Analytics from "./pages/Analytics";
 import AdminPanel from "./pages/AdminPanel";
 
+
 const App = () => {
   return (
     <>
-    
+  
+    {/* Main application routes */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

@@ -1,56 +1,104 @@
+// src/pages/Analytics.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { parseCSVto3DData } from "../utils/parseCSVto3DData";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setChartType,
+  setXAxis,
+  setYAxis,
+  setChartData,
+} from "../redux/chartSlice";
+import ChartSelector from "../components/ChartSelector";
+import ChartRenderer from "../components/ChartRenderer";
 import Echart3d from "../components/Echart3d";
+import { parseCSVto3DData } from "../utils/parseCSVto3DData";
+
+const chartTypes3D = ["bar3D", "scatter3D", "line3D"];
 
 const Analytics = () => {
+  const dispatch = useDispatch();
+  const { xAxis, yAxis, chartType, chartData } = useSelector(
+    (state) => state.chart
+  );
+
+  const [mode, setMode] = useState("2d"); // "2d" or "3d"
   const [files, setFiles] = useState([]);
   const [selectedFileId, setSelectedFileId] = useState("");
   const [fileData, setFileData] = useState([]);
-  const [chartData, setChartData] = useState([]);
+
+  const [zCol, setZCol] = useState("");
   const [xLabels, setXLabels] = useState([]);
   const [yLabels, setYLabels] = useState([]);
-  const [xCol, setXCol] = useState("");
-  const [yCol, setYCol] = useState("");
-  const [zCol, setZCol] = useState("");
+  const [selected3DType, setSelected3DType] = useState("bar3D");
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/upload/all", { withCredentials: true })
-      .then((res) => setFiles(res.data.data));
+      .get("http://localhost:5000/api/upload/all", {
+        withCredentials: true,
+      })
+      .then((res) => setFiles(res.data.data))
+      .catch((err) => console.log(err));
   }, []);
 
   useEffect(() => {
-    if (selectedFileId) {
-      axios
-        .get(`http://localhost:5000/api/upload/${selectedFileId}`, {
-          withCredentials: true,
-        })
-        .then((res) => setFileData(res.data.data));
-    }
+    if (!selectedFileId) return;
+    axios
+      .get(`http://localhost:5000/api/upload/${selectedFileId}`, {
+        withCredentials: true,
+      })
+      .then((res) => setFileData(res.data.data))
+      .catch((err) => console.log(err));
   }, [selectedFileId]);
 
   useEffect(() => {
-    if (fileData.length && xCol && yCol && zCol) {
+    if (!fileData.length) return;
+
+    if (mode === "2d" && xAxis && yAxis) {
+      const transformed = fileData.map((row) => ({
+        x: row[xAxis],
+        y: parseFloat(row[yAxis]) || 0,
+      }));
+      dispatch(setChartData(transformed));
+    }
+
+    if (mode === "3d" && xAxis && yAxis && zCol) {
       const { chartData, xLabels, yLabels } = parseCSVto3DData(
         fileData,
-        xCol,
-        yCol,
+        xAxis,
+        yAxis,
         zCol
       );
-      setChartData(chartData);
+      dispatch(setChartData(chartData));
       setXLabels(xLabels);
       setYLabels(yLabels);
     }
-  }, [fileData, xCol, yCol, zCol]);
+  }, [fileData, mode, xAxis, yAxis, zCol, dispatch]);
 
   return (
     <div className="p-6 bg-white shadow rounded">
-      <h2 className="text-2xl font-bold mb-4">3D Analytics Viewer</h2>
+      <h2 className="text-2xl font-bold mb-4">Analytics Viewer</h2>
 
+      {/* Mode Toggle */}
+      <div className="mb-4 flex gap-4">
+        <button
+          className={`px-4 py-2 rounded ${mode === "2d" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
+          onClick={() => setMode("2d")}
+        >
+          2D Chart
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${mode === "3d" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
+          onClick={() => setMode("3d")}
+        >
+          3D Chart
+        </button>
+      </div>
+
+      {/* File Selector */}
       <select
         className="border p-2 rounded mb-4"
         onChange={(e) => setSelectedFileId(e.target.value)}
+        value={selectedFileId}
       >
         <option value="">Select File</option>
         {files.map((file) => (
@@ -61,32 +109,58 @@ const Analytics = () => {
       </select>
 
       {fileData.length > 0 && (
-        <div className="grid grid-cols-3 gap-4 mb-4">
-          {[xCol, yCol, zCol].map((val, i) => (
-            <select
-              key={i}
-              className="border p-2 rounded"
-              value={val}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (i === 0) setXCol(val);
-                if (i === 1) setYCol(val);
-                if (i === 2) setZCol(val);
-              }}
-            >
-              <option value="">Select {["X", "Y", "Z"][i]} Column</option>
-              {Object.keys(fileData[0] || {}).map((col) => (
-                <option key={col} value={col}>
-                  {col}
-                </option>
-              ))}
-            </select>
-          ))}
-        </div>
-      )}
+        <>
+          {/* Axis/Chart Selector for 2D */}
+          {mode === "2d" && <ChartSelector dataKeys={Object.keys(fileData[0])} />}
 
-      {chartData.length > 0 && (
-        <Echart3d chartData={chartData} xLabels={xLabels} yLabels={yLabels} />
+          {/* Axis and Type Selector for 3D */}
+          {mode === "3d" && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                {[xAxis, yAxis, zCol].map((val, i) => (
+                  <select
+                    key={i}
+                    className="border p-2 rounded"
+                    value={val}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (i === 0) dispatch(setXAxis(value));
+                      if (i === 1) dispatch(setYAxis(value));
+                      if (i === 2) setZCol(value);
+                    }}
+                  >
+                    <option value="">Select {['X', 'Y', 'Z'][i]} Column</option>
+                    {Object.keys(fileData[0]).map((key) => (
+                      <option key={key} value={key}>{key}</option>
+                    ))}
+                  </select>
+                ))}
+              </div>
+              <div className="mb-4">
+                <select
+                  className="border p-2 rounded"
+                  value={selected3DType}
+                  onChange={(e) => setSelected3DType(e.target.value)}
+                >
+                  {chartTypes3D.map((type) => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+              </div>
+            </>
+          )}
+
+          {/* Chart Output */}
+          {mode === "2d" && chartData.length > 0 && <ChartRenderer />}
+          {mode === "3d" && chartData.length > 0 && (
+            <Echart3d
+              chartData={chartData}
+              xLabels={xLabels}
+              yLabels={yLabels}
+              chartType={selected3DType}
+            />
+          )}
+        </>
       )}
     </div>
   );

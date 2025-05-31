@@ -1,50 +1,58 @@
+// src/components/Echart3d.jsx
+import React from "react";
 import ReactEcharts from "echarts-for-react";
 import * as echarts from "echarts";
 import "echarts-gl";
 
-const Echart3d = ({ chartData, xLabels, yLabels }) => {
+const Echart3d = ({ chartData, xLabels, yLabels, chartType }) => {
   const option = {
-    tooltip: {},
+    tooltip: {
+      formatter: (params) => {
+        const x = xLabels[params.value[0]] || params.value[0];
+        const y = yLabels[params.value[1]] || params.value[1];
+        const z = params.value[2];
+        return `X: ${x}<br/>Y: ${y}<br/>Z: ${z}`;
+      },
+    },
     visualMap: {
-      max: Math.max(...chartData.map(item => item[2])),
-      inRange: { color: ["#87CEFA", "#1E90FF", "#00008B"] },
+      max: Math.max(...chartData.map((d) => d[2])),
+      inRange: {
+        color: ["#87CEFA", "#1E90FF", "#00008B"],
+      },
     },
     xAxis3D: {
       type: "category",
-      name: "X",
       data: xLabels,
     },
     yAxis3D: {
       type: "category",
-      name: "Y",
       data: yLabels,
     },
     zAxis3D: {
       type: "value",
-      name: "Z",
     },
     grid3D: {
-      boxWidth: 100,
+      boxWidth: 200,
       boxDepth: 80,
-      viewControl: {
-        autoRotate: false,
-        distance: 120,
-      },
       light: {
-        main: { intensity: 1.2 },
-        ambient: { intensity: 0.3 },
+        main: {
+          intensity: 1.2,
+        },
+        ambient: {
+          intensity: 0.3,
+        },
       },
     },
     series: [
       {
-        type: "bar3D",
-        data: chartData.map(([x, y, z]) => ({ value: [x, y, z] })),
+        type: chartType || "bar3D",
+        data: chartData,
         shading: "color",
       },
     ],
   };
 
-  return <ReactEcharts option={option} style={{ height: "500px" }} />;
+  return <ReactEcharts option={option} style={{ height: "600px" }} />;
 };
 
 export default Echart3d;

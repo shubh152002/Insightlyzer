@@ -80,4 +80,15 @@ export const login = async (req, res) => {
         
     };
 }
+
+export const logout = async (req, res) => {
+  try {
+    res.clearCookie('token').status(200).json({ message: 'Logout successful', success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message || 'Internal Server Error', success: false });
+  }
+};
+
+
+
     

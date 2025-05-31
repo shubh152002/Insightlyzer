@@ -25,6 +25,7 @@ app.use('/api/auth', userRoute);
 app.use('/api/upload',uploadRouters)
 
 
+
 app.listen(PORT, () => {
   connectDB();
   console.log(`🚀 Insightlyzer server running on port ${PORT}`);
