@@ -1,5 +1,4 @@
 // src/components/ChartSelector.jsx
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setXAxis, setYAxis, setChartType } from '../redux/chartSlice';
 

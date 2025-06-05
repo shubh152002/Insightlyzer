@@ -12,6 +12,7 @@ import ChartSelector from "../components/ChartSelector";
 import ChartRenderer from "../components/ChartRenderer";
 import Echart3d from "../components/Echart3d";
 import { parseCSVto3DData } from "../utils/parseCSVto3DData";
+import ErrorBoundary from "../components/ErrorBoundary";
 
 const chartTypes3D = ["bar3D", "scatter3D", "line3D"];
 
@@ -81,13 +82,17 @@ const Analytics = () => {
       {/* Mode Toggle */}
       <div className="mb-4 flex gap-4">
         <button
-          className={`px-4 py-2 rounded ${mode === "2d" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
+          className={`px-4 py-2 rounded ${
+            mode === "2d" ? "bg-indigo-600 text-white" : "bg-gray-200"
+          }`}
           onClick={() => setMode("2d")}
         >
           2D Chart
         </button>
         <button
-          className={`px-4 py-2 rounded ${mode === "3d" ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
+          className={`px-4 py-2 rounded ${
+            mode === "3d" ? "bg-indigo-600 text-white" : "bg-gray-200"
+          }`}
           onClick={() => setMode("3d")}
         >
           3D Chart
@@ -96,7 +101,7 @@ const Analytics = () => {
 
       {/* File Selector */}
       <select
-        className="border p-2 rounded mb-4"
+        className=" border p-2 rounded mb-4"
         onChange={(e) => setSelectedFileId(e.target.value)}
         value={selectedFileId}
       >
@@ -111,7 +116,9 @@ const Analytics = () => {
       {fileData.length > 0 && (
         <>
           {/* Axis/Chart Selector for 2D */}
-          {mode === "2d" && <ChartSelector dataKeys={Object.keys(fileData[0])} />}
+          {mode === "2d" && (
+            <ChartSelector dataKeys={Object.keys(fileData[0])} />
+          )}
 
           {/* Axis and Type Selector for 3D */}
           {mode === "3d" && (
@@ -129,9 +136,11 @@ const Analytics = () => {
                       if (i === 2) setZCol(value);
                     }}
                   >
-                    <option value="">Select {['X', 'Y', 'Z'][i]} Column</option>
+                    <option value="">Select {["X", "Y", "Z"][i]} Column</option>
                     {Object.keys(fileData[0]).map((key) => (
-                      <option key={key} value={key}>{key}</option>
+                      <option key={key} value={key}>
+                        {key}
+                      </option>
                     ))}
                   </select>
                 ))}
@@ -143,7 +152,9 @@ const Analytics = () => {
                   onChange={(e) => setSelected3DType(e.target.value)}
                 >
                   {chartTypes3D.map((type) => (
-                    <option key={type} value={type}>{type}</option>
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -153,12 +164,14 @@ const Analytics = () => {
           {/* Chart Output */}
           {mode === "2d" && chartData.length > 0 && <ChartRenderer />}
           {mode === "3d" && chartData.length > 0 && (
-            <Echart3d
-              chartData={chartData}
-              xLabels={xLabels}
-              yLabels={yLabels}
-              chartType={selected3DType}
-            />
+            <ErrorBoundary>
+              <Echart3d
+                chartData={chartData}
+                xLabels={xLabels}
+                yLabels={yLabels}
+                chartType={selected3DType}
+              />
+            </ErrorBoundary>
           )}
         </>
       )}

@@ -14,12 +14,16 @@ const Echart3d = ({ chartData, xLabels, yLabels, chartType }) => {
         return `X: ${x}<br/>Y: ${y}<br/>Z: ${z}`;
       },
     },
-    visualMap: {
-      max: Math.max(...chartData.map((d) => d[2])),
-      inRange: {
-        color: ["#87CEFA", "#1E90FF", "#00008B"],
-      },
-    },
+   visualMap: {
+  max:
+    chartData && chartData.length > 0
+      ? Math.max(...chartData.map((d) => parseFloat(d[2]) || 0))
+      : 100,
+  inRange: {
+    color: ["#87CEFA", "#1E90FF", "#00008B"],
+  },
+},
+
     xAxis3D: {
       type: "category",
       data: xLabels,
@@ -32,7 +36,7 @@ const Echart3d = ({ chartData, xLabels, yLabels, chartType }) => {
       type: "value",
     },
     grid3D: {
-      boxWidth: 200,
+      boxWidth: 150,
       boxDepth: 80,
       light: {
         main: {

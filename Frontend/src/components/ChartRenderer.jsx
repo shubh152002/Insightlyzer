@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { Bar, Line, Pie, Doughnut } from 'react-chartjs-2';
 import {
